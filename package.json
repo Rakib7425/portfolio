@@ -1,0 +1,33 @@
+{
+  "name": "portfolio-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "server"
+  ],
+  "scripts": {
+    "dev": "concurrently \"yarn workspace @portfolio/web dev\" \"yarn workspace @portfolio/admin dev\" \"yarn workspace @portfolio/server dev\"",
+    "dev:web": "yarn workspace @portfolio/web dev",
+    "dev:admin": "yarn workspace @portfolio/admin dev",
+    "dev:server": "yarn workspace @portfolio/server dev",
+    "build": "yarn workspace @portfolio/server build && yarn workspace @portfolio/web build && yarn workspace @portfolio/admin build",
+    "build:web": "yarn workspace @portfolio/web build",
+    "build:admin": "yarn workspace @portfolio/admin build",
+    "build:server": "yarn workspace @portfolio/server build",
+    "start": "concurrently \"yarn workspace @portfolio/web start\" \"yarn workspace @portfolio/admin start\" \"yarn workspace @portfolio/server start\"",
+    "lint": "yarn workspaces run lint",
+    "test": "yarn workspaces run test",
+    "type-check": "yarn workspaces run type-check",
+    "docker:dev": "docker-compose -f docker-compose.yaml up",
+    "docker:build": "docker-compose -f docker-compose.yaml build",
+    "db:push": "yarn workspace @portfolio/server db:push",
+    "db:generate": "yarn workspace @portfolio/server db:generate",
+    "db:migrate": "yarn workspace @portfolio/server db:migrate",
+    "db:seed": "yarn workspace @portfolio/server db:seed",
+    "db:studio": "yarn workspace @portfolio/server db:studio"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
