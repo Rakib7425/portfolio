@@ -42,49 +42,41 @@ export default function ProjectsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-black gap-6">
         <motion.div
-          animate={{ scale: [1, 1.2, 1], rotate: [0, 360] }}
+          animate={{
+            scale: [1, 1.2, 1],
+            rotate: [0, 360],
+            borderColor: ["#8b5cf6", "#10b981", "#8b5cf6"]
+          }}
           transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          className="h-12 w-12 border-b-2 border-primary rounded-full"
+          className="h-16 w-16 border-t-2 border-primary rounded-full"
         />
+        <span className="text-xs font-black uppercase tracking-[0.5em] text-primary animate-pulse">Initializing Archive</span>
       </div>
     );
   }
 
   return (
-    <div ref={containerRef} className="relative min-h-screen bg-black text-white selection:bg-primary selection:text-white pb-40">
+    <div ref={containerRef} className="relative min-h-screen bg-black text-white selection:bg-primary selection:text-white pb-40 overflow-x-hidden">
 
       {/* ── Cinematic Ambient Background ── */}
       <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
-        {/* Deep Dark Mesh Gradients */}
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_20%,rgba(139,92,246,0.1)_0%,transparent_50%),radial-gradient(circle_at_80%_80%,rgba(16,185,129,0.1)_0%,transparent_50%)]" />
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_20%,rgba(139,92,246,0.15)_0%,transparent_50%),radial-gradient(circle_at_80%_80%,rgba(16,185,129,0.15)_0%,transparent_50%)]" />
+        <div className="absolute inset-0 opacity-[0.05] bg-[url('/noise.svg')] mix-blend-overlay" />
 
-        {/* Animated Noise Pattern */}
-        <div className="absolute inset-0 opacity-[0.03] bg-[url('/noise.svg')] mix-blend-overlay" />
-
-        {/* Floating Perspective Orbs */}
         <motion.div
           animate={{
-            x: [0, 100, 0],
-            y: [0, -50, 0],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute top-1/4 -left-20 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px]"
-        />
-        <motion.div
-          animate={{
-            x: [0, -80, 0],
-            y: [0, 120, 0],
+            x: [0, 50, 0],
+            y: [0, -30, 0],
             scale: [1, 1.1, 1],
           }}
-          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute -bottom-20 -right-20 w-[500px] h-[500px] bg-accent/10 rounded-full blur-[100px]"
+          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+          className="absolute top-1/4 -left-20 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px]"
         />
       </div>
 
-      <div className="container mx-auto px-4 md:px-12">
+      <div className="container mx-auto px-4 md:px-8">
         {/* ════════════════════════════
             PAGE HEADER
         ════════════════════════════ */}
@@ -94,37 +86,41 @@ export default function ProjectsPage() {
         />
 
         {/* ════════════════════════════
-            PROJECTS SHOWCASE (Editorial Single Column)
+            PROJECTS GRID
         ════════════════════════════ */}
-        <main className="relative z-10 space-y-24 md:space-y-48">
+        <main className="relative z-10 max-w-7xl mx-auto pt-12">
           <AnimatePresence mode="popLayout">
             {sorted.length > 0 ? (
-              <div className="max-w-7xl mx-auto">
+              <motion.div
+                layout
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+              >
                 {sorted.map((project, i) => (
                   <ProjectCard key={project.id} project={project} index={i} />
                 ))}
-              </div>
+              </motion.div>
             ) : (
               /* EMPTY STATE */
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
                 className="flex flex-col items-center justify-center py-32 text-center"
               >
-                <div className="relative mb-8">
-                  <FolderOpen className="h-24 w-24 text-white/5" />
-                  <X className="absolute inset-0 h-10 w-10 text-primary m-auto" />
+                <div className="relative mb-8 group">
+                  <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-150 group-hover:scale-200 transition-transform duration-500" />
+                  <FolderOpen className="h-32 w-32 text-white/10 group-hover:text-primary/20 transition-colors relative z-10" />
+                  <X className="absolute inset-0 h-12 w-12 text-primary m-auto group-hover:scale-125 transition-transform z-20" />
                 </div>
-                <h3 className="text-3xl font-black uppercase tracking-tighter mb-4">No Matches Found</h3>
-                <p className="text-zinc-500 max-w-sm mb-12 font-light">
-                  I haven't released any work tagged with <span className="text-white font-bold">{filter}</span> just yet. Explore the full catalog below.
+                <h3 className="text-4xl font-black uppercase tracking-tighter mb-4">No Matches Found</h3>
+                <p className="text-zinc-500 max-w-sm mb-12 font-light text-lg">
+                  The archive doesn't contain entries tagged with <span className="text-white font-bold">{filter}</span>.
                 </p>
                 <button
                   onClick={() => setFilter("all")}
-                  className="px-10 py-4 rounded-full bg-white text-black font-black uppercase text-xs tracking-widest hover:scale-105 active:scale-95 transition-all"
+                  className="px-12 py-5 rounded-full bg-primary text-primary-foreground font-black uppercase text-xs tracking-[0.2em] shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
                 >
-                  Return to Archive
+                  Clear Filters
                 </button>
               </motion.div>
             )}
@@ -135,16 +131,16 @@ export default function ProjectsPage() {
             FILTER SECTION (Floating Hub)
         ════════════════════════════ */}
         <FilterSection
-          technologies={allTechnologies.slice(0, 10)}
+          technologies={allTechnologies.slice(0, 15)}
           activeFilter={filter}
           onFilterChange={setFilter}
           totalCount={projects.length}
         />
 
         {/* Section Divider */}
-        <div className="mt-40 flex flex-col items-center gap-6 opacity-20">
-          <div className="h-24 w-px bg-gradient-to-b from-white to-transparent" />
-          <span className="text-[10px] font-black uppercase tracking-[1em] text-white">End of Showcase</span>
+        <div className="mt-40 flex flex-col items-center gap-8 opacity-20">
+          <div className="h-32 w-px bg-gradient-to-b from-primary to-transparent" />
+          <span className="text-[10px] font-black uppercase tracking-[1.5em] text-primary">End of Archive</span>
         </div>
       </div>
     </div>

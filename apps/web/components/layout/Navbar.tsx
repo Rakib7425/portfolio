@@ -104,6 +104,7 @@ export function Navbar() {
                   href={RESUME_DOWNLOAD_URL}
                   target="_blank"
                   rel="noopener noreferrer"
+                  download="rakibul_resume.pdf"
                   className="hidden md:inline-flex items-center justify-center rounded-md border border-dashed border-input/60 px-5 py-2 text-sm text-primary transition-all hover:border-primary/50 hover:bg-primary/5 hover:-translate-y-0.5"
                 >
                   <Download className="mr-2 h-4 w-4" /> Resume
@@ -190,6 +191,7 @@ export function Navbar() {
                     href={RESUME_DOWNLOAD_URL}
                     target="_blank"
                     rel="noopener noreferrer"
+                    download="rakibul_resume.pdf"
                     className="flex items-center justify-center gap-2 w-full px-4 py-4 rounded-xl bg-primary text-primary-foreground font-semibold shadow-lg shadow-primary/20"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >

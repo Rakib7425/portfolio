@@ -1,10 +1,9 @@
 "use client";
 
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { Github, ExternalLink, ArrowRight, FolderOpen, Layers } from "lucide-react";
+import { motion, useMotionValue, useTransform } from "framer-motion";
+import { Github, ExternalLink, ArrowRight, FolderOpen, Code2, Sparkles } from "lucide-react";
 import { Project } from "@/lib/api/public";
-// import { Badge } from "@/components/ui/Badge";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 interface ProjectCardProps {
   project: Project;
@@ -13,151 +12,137 @@ interface ProjectCardProps {
 
 export function ProjectCard({ project, index }: ProjectCardProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
 
-  // 3D Perspective Animation Values
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
+  // Spotlight effect
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
 
-  const mouseXSpring = useSpring(x);
-  const mouseYSpring = useSpring(y);
-
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
-
-  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
-    const mouseX = event.clientX - rect.left;
-    const mouseY = event.clientY - rect.top;
-    const xPct = (mouseX / width) - 0.5;
-    const yPct = (mouseY / height) - 0.5;
-    x.set(xPct);
-    y.set(yPct);
+  const handleMouseMove = ({ currentTarget, clientX, clientY }: React.MouseEvent) => {
+    const { left, top } = currentTarget.getBoundingClientRect();
+    mouseX.set(clientX - left);
+    mouseY.set(clientY - top);
   };
-
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
-
-  const isFeatured = project.featured;
 
   return (
     <motion.div
       ref={containerRef}
       onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      initial={{ opacity: 0, y: 50 }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.8, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
-      style={{
-        rotateX,
-        rotateY,
-        transformStyle: "preserve-3d",
-      }}
-      className={`group relative w-full mb-12 last:mb-0 ${isFeatured ? "min-h-[60vh] md:min-h-[80vh]" : "min-h-[40vh]"
-        }`}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
+      className="group relative flex flex-col h-full rounded-2xl border border-white/10 bg-zinc-900/50 backdrop-blur-md overflow-hidden transition-all duration-500 hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/10"
     >
-      <div
-        style={{ transform: "translateZ(50px)" }}
-        className="relative h-full w-full rounded-[2rem] md:rounded-[4rem] overflow-hidden bg-zinc-900 border border-white/10 shadow-3xl flex flex-col md:flex-row group-hover:border-primary/50 transition-colors duration-500"
-      >
-        {/* Animated Background Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/20 opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+      {/* Spotlight Gradient */}
+      <motion.div
+        className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 group-hover:opacity-100 transition duration-300 z-10"
+        style={{
+          background: useTransform(
+            [mouseX, mouseY],
+            ([x, y]) => `radial-gradient(600px circle at ${x}px ${y}px, rgba(var(--primary-rgb), 0.15), transparent 40%)`
+          ),
+        }}
+      />
 
-        {/* Project Image Section */}
-        <div className={`relative overflow-hidden bg-zinc-800 ${isFeatured ? "md:w-3/5" : "md:w-1/2"}`}>
-          {project.imageUrl ? (
-            <motion.img
-              src={project.imageUrl}
-              alt={project.title}
-              className="h-full w-full object-cover object-top filter grayscale group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-105"
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center opacity-10">
-              <FolderOpen className="h-40 w-40" />
+      {/* Image / Icon Area */}
+      <div className="relative h-56 overflow-hidden">
+        {project.imageUrl ? (
+          <motion.img
+            src={project.imageUrl}
+            alt={project.title}
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-1"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center bg-zinc-800/50">
+            <Code2 className="h-16 w-16 text-white/5 group-hover:text-primary/20 transition-colors duration-500" />
+          </div>
+        )}
+
+        {/* Featured Badge */}
+        {project.featured && (
+          <div className="absolute top-4 right-4 z-20">
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/20 backdrop-blur-xl border border-primary/20">
+              <Sparkles className="h-3 w-3 text-primary animate-pulse" />
+              <span className="text-[10px] font-bold text-primary uppercase tracking-widest">Featured</span>
             </div>
+          </div>
+        )}
+
+        {/* Overlay on hover */}
+        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center gap-4 z-20">
+          {project.liveUrl && (
+            <a
+              href={project.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-3 rounded-full bg-primary text-primary-foreground hover:scale-110 active:scale-95 transition-all"
+            >
+              <ExternalLink className="h-5 w-5" />
+            </a>
           )}
-
-          {/* Decorative Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-zinc-900/80 via-transparent to-transparent hidden md:block" />
-          <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/80 via-transparent to-transparent md:hidden" />
-
-          {/* Index Counter */}
-          <div className="absolute top-8 left-8 mix-blend-difference">
-            <span className="text-8xl font-black text-white/10 leading-none">
-              {(index + 1).toString().padStart(2, '0')}
-            </span>
-          </div>
-        </div>
-
-        {/* Project Details Section */}
-        <div className={`relative z-10 p-8 md:p-16 flex flex-col justify-center ${isFeatured ? "md:w-2/5" : "md:w-1/2"}`}>
-          <div className="space-y-6 md:space-y-8">
-            <motion.div style={{ transform: "translateZ(80px)" }} className="space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="h-1 w-10 bg-primary" />
-                <span className="text-xs font-bold uppercase tracking-[0.3em] text-primary">Case Study</span>
-              </div>
-              <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase leading-[0.95]">
-                {project.title}
-              </h2>
-            </motion.div>
-
-            <motion.p style={{ transform: "translateZ(60px)" }} className="text-lg md:text-xl text-zinc-400 leading-relaxed font-light">
-              {project.description}
-            </motion.p>
-
-            <motion.div style={{ transform: "translateZ(40px)" }} className="flex flex-wrap gap-2">
-              {project.technologies?.map((tech) => (
-                <span key={tech} className="text-[10px] md:text-[11px] font-black uppercase tracking-wider text-white/40 border border-white/10 px-3 py-1.5 rounded-full group-hover:border-primary/40 group-hover:text-primary transition-all duration-500">
-                  {tech}
-                </span>
-              ))}
-            </motion.div>
-
-            <motion.div style={{ transform: "translateZ(100px)" }} className="flex flex-col sm:flex-row items-center gap-6 pt-8">
-              {project.liveUrl && (
-                <a
-                  href={project.liveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group/btn relative inline-flex items-center justify-center px-8 py-4 bg-white text-black font-bold uppercase text-xs tracking-widest overflow-hidden rounded-full transition-all hover:scale-105 active:scale-95"
-                >
-                  <span className="relative z-10 flex items-center gap-2">
-                    Live Preview <ArrowRight className="h-4 w-4" />
-                  </span>
-                  <div className="absolute inset-0 bg-primary translate-y-full group-hover/btn:translate-y-0 transition-transform duration-500 rounded-full" />
-                </a>
-              )}
-
-              {project.repoUrl && (
-                <a
-                  href={project.repoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-zinc-500 hover:text-white transition-colors"
-                >
-                  <Github className="h-5 w-5" /> View Source
-                </a>
-              )}
-            </motion.div>
-          </div>
+          {project.repoUrl && (
+            <a
+              href={project.repoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-3 rounded-full bg-white/10 backdrop-blur-md text-white border border-white/20 hover:bg-white/20 hover:scale-110 active:scale-95 transition-all"
+            >
+              <Github className="h-5 w-5" />
+            </a>
+          )}
         </div>
       </div>
 
-      {/* Decorative Floating Element */}
-      <motion.div
-        animate={{
-          y: [0, -20, 0],
-          rotate: [0, 5, 0],
-        }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute -right-4 -bottom-4 h-24 w-24 bg-primary/20 blur-3xl rounded-full -z-10"
-      />
+      {/* Content Area */}
+      <div className="p-6 flex flex-col flex-1 gap-4">
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-primary/60">
+            <span className="w-6 h-px bg-primary/30" />
+            Project Archive
+          </div>
+          <h3 className="text-2xl font-black tracking-tight text-white group-hover:text-primary transition-colors duration-300 uppercase">
+            {project.title}
+          </h3>
+        </div>
+
+        <p className="text-sm text-zinc-400 font-light leading-relaxed line-clamp-3">
+          {project.description}
+        </p>
+
+        {/* Tags */}
+        <div className="flex flex-wrap gap-2 mt-auto pt-4">
+          {project.technologies?.slice(0, 4).map((tech) => (
+            <span
+              key={tech}
+              className="text-[9px] font-black uppercase tracking-widest text-white/40 border border-white/5 bg-white/[0.02] px-2.5 py-1 rounded-md group-hover:border-primary/20 group-hover:text-primary/70 transition-all duration-300"
+            >
+              {tech}
+            </span>
+          ))}
+          {(project.technologies?.length ?? 0) > 4 && (
+            <span className="text-[9px] font-black text-white/20 px-1 py-1">+{project.technologies!.length - 4}</span>
+          )}
+        </div>
+
+        {/* Footer Link */}
+        <div className="pt-2 border-t border-white/5 mt-2 overflow-hidden">
+          <motion.div
+            animate={{ x: isHovered ? 0 : -20, opacity: isHovered ? 1 : 0 }}
+            transition={{ duration: 0.3 }}
+            className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-primary"
+          >
+            Review Details <ArrowRight className="h-3 w-3" />
+          </motion.div>
+          {!isHovered && (
+            <div className="text-[11px] font-black uppercase tracking-widest text-white/20 flex items-center gap-2">
+              Show More <FolderOpen className="h-3 w-3" />
+            </div>
+          )}
+        </div>
+      </div>
     </motion.div>
   );
 }

@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { publicApi, Project, Experience, Skill, Profile, RESUME_DOWNLOAD_URL } from "@/lib/api/public";
 import { Badge } from "@/components/ui/Badge";
+import { SiLeptos } from "react-icons/si";
 
 /* ─── animation helpers ─── */
 const fadeUp: Variants = {
@@ -93,115 +94,194 @@ export default function HomePage() {
       </div>
 
       {/* ═══════════════════════════════════════════
-          1 · HERO SECTION
+          1 · HERO SECTION (REDESIGNED)
       ════════════════════════════════════════════ */}
-      <section className="relative min-h-[92vh] flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8">
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          animate="visible"
-          className="text-center max-w-4xl mx-auto space-y-8"
-        >
-          {/* Available badge */}
-          <motion.div variants={fadeUp} className="flex justify-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-background/60 backdrop-blur-sm shadow-sm hover:border-primary/40 transition-colors cursor-default">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
-              </span>
-              <span className="text-sm font-medium text-muted-foreground">Available for new projects</span>
+      <section className="relative min-h-screen flex flex-col justify-center px-4 sm:px-6 lg:px-12 overflow-hidden">
+        {/* Decorative Background Elements */}
+        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] -z-10 animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-accent/5 rounded-full blur-[100px] -z-10 animate-pulse delay-700" />
+
+        <div className="container mx-auto max-w-7xl">
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            animate="visible"
+            className="grid lg:grid-cols-2 gap-12 items-center"
+          >
+            {/* Left Side: Text Info */}
+            <div className="flex flex-col space-y-8 z-10 text-left">
+              <motion.div variants={fadeUp} className="flex justify-start">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/5 backdrop-blur-md shadow-sm">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+                  </span>
+                  <span className="text-xs font-semibold uppercase tracking-widest text-primary/80">Available for Innovation</span>
+                </div>
+              </motion.div>
+
+              <motion.div variants={fadeUp} className="space-y-4">
+                <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-[0.9]">
+                  CRAFTING <br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary/80 to-accent animate-gradient-x">
+                    DIGITAL SOULS.
+                  </span>
+                </h1>
+                <p className="text-xl md:text-2xl text-muted-foreground/80 font-light max-w-xl leading-relaxed">
+                  I&apos;m <span className="text-foreground font-medium underline decoration-primary/30 underline-offset-4">{loading ? "Rakibul Islam" : (profile?.name ?? "Rakibul Islam")}</span>,
+                  a visionary developer transforming complex ideas into elegant, pixel-perfect realities.
+                </p>
+              </motion.div>
+
+              <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-6 pt-4">
+                <Link
+                  href="/projects"
+                  className="group relative inline-flex h-14 items-center justify-center overflow-hidden rounded-full bg-primary px-10 text-sm font-bold text-primary-foreground transition-all hover:scale-105 active:scale-95"
+                >
+                  <span className="relative z-10 flex items-center gap-2">
+                    Explore Archive <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </span>
+                  <div className="absolute inset-0 -z-1 bg-gradient-to-r from-primary via-accent to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                </Link>
+                <Link
+                  href="/contact"
+                  className="inline-flex h-14 items-center justify-center rounded-full border border-border bg-background/50 backdrop-blur-md px-10 text-sm font-bold transition-all hover:bg-accent hover:text-accent-foreground hover:border-accent hover:scale-105 active:scale-95"
+                >
+                  Start a Conversation
+                </Link>
+              </motion.div>
+
+              {/* Socials & Resume */}
+              <motion.div variants={fadeUp} className="flex items-center gap-8 pt-8 border-t border-border/50 max-w-fit">
+                <div className="flex gap-4">
+                  {[
+                    { href: profile?.githubUrl ?? "https://github.com/Rakib7425", icon: Github, label: "GitHub" },
+                    { href: profile?.linkedinUrl ?? "#", icon: Linkedin, label: "LinkedIn" },
+                    { href: `mailto:${profile?.email ?? "contact@example.com"}`, icon: Mail, label: "Email" },
+                  ].map(({ href, icon: Icon, label }) => (
+                    <a
+                      key={label}
+                      href={href}
+                      target={href.startsWith("mailto") ? undefined : "_blank"}
+                      rel="noreferrer"
+                      className="p-3 rounded-full border border-border/50 hover:bg-primary/10 hover:border-primary/30 transition-all hover:-translate-y-1 text-muted-foreground hover:text-primary"
+                      aria-label={label}
+                    >
+                      <Icon className="h-5 w-5" />
+                    </a>
+                  ))}
+                </div>
+                {profile?.resumeUrl && (
+                  <div className="h-8 w-px bg-border/50" />
+                )}
+                {profile?.resumeUrl && (
+                  <a
+                    href={RESUME_DOWNLOAD_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    download="rakibul_resume.pdf"
+                    className="flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors group"
+                  >
+                    <Download className="h-4 w-4 group-hover:animate-bounce" /> rakibul_resume.pdf
+                  </a>
+                )}
+              </motion.div>
             </div>
-          </motion.div>
 
-          {/* Heading */}
-          <motion.h1 variants={fadeUp} className="text-5xl sm:text-7xl font-bold tracking-tight leading-tight">
-            Building digital
-            <span className="block mt-2 bg-gradient-to-r from-primary via-primary/80 to-accent bg-clip-text text-transparent pb-2">
-              products &amp; experiences.
-            </span>
-          </motion.h1>
-
-          {/* Subtitle */}
-          <motion.p variants={fadeUp} className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            I&apos;m{" "}
-            <span className="font-semibold text-foreground">
-              {loading ? "Rakibul Islam" : (profile?.name ?? "Rakibul Islam")}
-            </span>
-            {", "}
-            {loading
-              ? "a Full-Stack Developer with 2+ years of experience building scalable web apps."
-              : (profile?.bio?.split("\n\n")[0] ?? "a Full-Stack Developer crafting scalable, performant web apps.")}
-          </motion.p>
-
-          {/* Current role chip */}
-          {currentJob && (
-            <motion.div variants={fadeUp} className="flex justify-center">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary text-secondary-foreground text-sm">
-                <Briefcase className="h-3.5 w-3.5" />
-                <span>{currentJob.position} @ <strong>{currentJob.company}</strong></span>
+            {/* Right Side: Visual Element (Terminal Mockup) */}
+            <motion.div
+              variants={fadeUp}
+              className="hidden lg:block relative group"
+            >
+              <div className="absolute -inset-1 bg-gradient-to-r from-primary to-accent rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200" />
+              <div className="relative bg-card border border-border/50 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-xl">
+                <div className="flex items-center justify-between px-4 py-3 bg-muted/30 border-b border-border/50">
+                  <div className="flex gap-1.5">
+                    <div className="w-3 h-3 rounded-full bg-[#FF5F56]" />
+                    <div className="w-3 h-3 rounded-full bg-[#FFBD2E]" />
+                    <div className="w-3 h-3 rounded-full bg-[#27C93F]" />
+                  </div>
+                  <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono">portfolio.tsx — Edited</div>
+                </div>
+                <div className="p-8 font-mono text-sm space-y-2 overflow-hidden">
+                  <div className="flex gap-4">
+                    <span className="text-muted-foreground/40 select-none">01</span>
+                    <span className="text-primary italic">class</span>
+                    <span className="text-accent">VisionaryDeveloper</span>
+                    <span className="text-foreground">{"{"}</span>
+                  </div>
+                  <div className="flex gap-4">
+                    <span className="text-muted-foreground/40 select-none">02</span>
+                    <span className="ml-4 text-muted-foreground/60">// passion drives innovation</span>
+                  </div>
+                  <div className="flex gap-4">
+                    <span className="text-muted-foreground/40 select-none">03</span>
+                    <span className="ml-4 text-foreground">constructor() {"{"}</span>
+                  </div>
+                  <div className="flex gap-4">
+                    <span className="text-muted-foreground/40 select-none">04</span>
+                    <span className="ml-8 text-primary">this</span>
+                    <span className="text-foreground">.motto =</span>
+                    <span className="text-accent">&quot;Code with Purpose&quot;</span>
+                    <span className="text-foreground">;</span>
+                  </div>
+                  <div className="flex gap-4">
+                    <span className="text-muted-foreground/40 select-none">05</span>
+                    <span className="ml-8 text-primary">this</span>
+                    <span className="text-foreground">.focus = [</span>
+                    <span className="text-accent">&quot;Performance&quot;</span>
+                    <span className="text-foreground">,</span>
+                    <span className="text-accent">&quot;Scalability&quot;</span>
+                    <span className="text-foreground">];</span>
+                  </div>
+                  <div className="flex gap-4 text-primary animate-pulse">
+                    <span className="text-muted-foreground/40 select-none cursor-default">06</span>
+                    <span className="ml-8 text-primary">this.shipping = true;</span>
+                    <span className="w-2 h-5 bg-primary/80 animate-caret" />
+                  </div>
+                  <div className="flex gap-4">
+                    <span className="text-muted-foreground/40 select-none">07</span>
+                    <span className="ml-4 text-foreground">{"}"}</span>
+                  </div>
+                  <div className="flex gap-4">
+                    <span className="text-muted-foreground/40 select-none">08</span>
+                    <span className="text-foreground">{"}"}</span>
+                  </div>
+                </div>
               </div>
+
+              {/* Decorative floating bits */}
+              <motion.div
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute -top-6 -right-6 p-4 rounded-xl bg-card border border-border shadow-xl backdrop-blur-md"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center">
+                    <SiLeptos className="h-5 w-5 text-green-500" />
+                  </div>
+                  <div>
+                    <div className="text-[10px] text-muted-foreground uppercase tracking-widest">Efficiency</div>
+                    <div className="text-sm font-bold text-foreground">99.98% Optimize</div>
+                  </div>
+                </div>
+              </motion.div>
             </motion.div>
-          )}
-
-          {/* CTA buttons */}
-          <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-4 pt-2">
-            <Link
-              href="/projects"
-              className="inline-flex h-12 items-center justify-center rounded-md bg-primary px-8 text-sm font-semibold text-primary-foreground shadow-md transition-all hover:bg-primary/90 hover:shadow-lg hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-            >
-              View My Work <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-            <Link
-              href="/contact"
-              className="inline-flex h-12 items-center justify-center rounded-md border border-input bg-background px-8 text-sm font-semibold shadow-sm transition-all hover:bg-accent hover:text-accent-foreground hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-            >
-              Contact Me
-            </Link>
-            {profile?.resumeUrl && (
-              <a
-                href={RESUME_DOWNLOAD_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex h-12 items-center justify-center rounded-md border border-dashed border-input/60 px-6 text-sm text-muted-foreground transition-all hover:border-primary/50 hover:text-foreground hover:-translate-y-0.5"
-              >
-                <Download className="mr-2 h-4 w-4" /> Resume
-              </a>
-            )}
           </motion.div>
-
-          {/* Social links */}
-          <motion.div variants={fadeUp} className="flex items-center justify-center gap-6 pt-2 text-muted-foreground">
-            {[
-              { href: profile?.githubUrl ?? "https://github.com/Rakib7425", icon: Github, label: "GitHub" },
-              { href: profile?.linkedinUrl ?? "#", icon: Linkedin, label: "LinkedIn" },
-              { href: `mailto:${profile?.email ?? "contact@example.com"}`, icon: Mail, label: "Email" },
-            ].map(({ href, icon: Icon, label }) => (
-              <a
-                key={label}
-                href={href}
-                target={href.startsWith("mailto") ? undefined : "_blank"}
-                rel="noreferrer"
-                className="p-2 rounded-lg hover:bg-accent hover:text-foreground transition-all hover:-translate-y-0.5"
-                aria-label={label}
-              >
-                <Icon className="h-5 w-5" />
-              </a>
-            ))}
-          </motion.div>
-        </motion.div>
+        </div>
 
         {/* Scroll indicator */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted-foreground/40"
+          className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 text-muted-foreground/40"
         >
-          <span className="text-xs">scroll</span>
+          <span className="text-[10px] uppercase tracking-[0.4em] font-black">Scroll</span>
           <motion.div
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-            className="w-px h-8 bg-gradient-to-b from-muted-foreground/40 to-transparent"
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="w-[1.5px] h-12 bg-gradient-to-b from-primary to-transparent"
           />
         </motion.div>
       </section>

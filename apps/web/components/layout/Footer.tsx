@@ -147,6 +147,7 @@ export function Footer() {
                         href={link.href || '#'}
                         target="_blank"
                         rel="noopener noreferrer"
+                        download={link.label === "Resume" ? "rakibul_resume.pdf" : undefined}
                         className="text-muted-foreground hover:text-primary transition-colors text-sm flex items-center gap-2 group"
                       >
                         <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-all -ml-5 group-hover:ml-0" />
