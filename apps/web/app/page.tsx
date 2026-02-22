@@ -207,7 +207,7 @@ export default function HomePage() {
                   <div className="flex gap-4">
                     <span className="text-muted-foreground/40 select-none">01</span>
                     <span className="text-primary italic">class</span>
-                    <span className="text-accent">VisionaryDeveloper</span>
+                    <span className="text-orange-400">VisionaryDeveloper</span>
                     <span className="text-foreground">{"{"}</span>
                   </div>
                   <div className="flex gap-4">
@@ -222,16 +222,16 @@ export default function HomePage() {
                     <span className="text-muted-foreground/40 select-none">04</span>
                     <span className="ml-8 text-primary">this</span>
                     <span className="text-foreground">.motto =</span>
-                    <span className="text-accent">&quot;Code with Purpose&quot;</span>
+                    <span className="text-green-500">&quot;Code with Purpose&quot;</span>
                     <span className="text-foreground">;</span>
                   </div>
                   <div className="flex gap-4">
                     <span className="text-muted-foreground/40 select-none">05</span>
                     <span className="ml-8 text-primary">this</span>
                     <span className="text-foreground">.focus = [</span>
-                    <span className="text-accent">&quot;Performance&quot;</span>
+                    <span className="text-green-500">&quot;Performance&quot;</span>
                     <span className="text-foreground">,</span>
-                    <span className="text-accent">&quot;Scalability&quot;</span>
+                    <span className="text-green-500">&quot;Scalability&quot;</span>
                     <span className="text-foreground">];</span>
                   </div>
                   <div className="flex gap-4 text-primary animate-pulse">
