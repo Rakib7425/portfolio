@@ -5,6 +5,7 @@ import { experienceController } from '../../controllers/experience.controller';
 import { projectsController } from '../../controllers/projects.controller';
 import { contactController } from '../../controllers/contact.controller';
 import { analyticsController } from '../../controllers/analytics.controller';
+import { policyController } from '../../controllers/policy.controller';
 import { contactLimiter } from '../../middlewares/rateLimiter';
 import { subscriberController } from '../../controllers/subscriber.controller';
 
@@ -33,5 +34,8 @@ router.post('/analytics/project/:id', analyticsController.trackProjectView);
 
 // Newsletter routes
 router.post('/subscribe', subscriberController.subscribe);
+
+// Policy pages (Privacy Policy, Terms of Service)
+router.get('/policy/:slug', policyController.getBySlug);
 
 export default router;

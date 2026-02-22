@@ -15,6 +15,13 @@
       "when": 1771692032800,
       "tag": "0001_broken_pandemic",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1771771385700,
+      "tag": "0002_policy_pages",
+      "breakpoints": true
     }
   ]
 }

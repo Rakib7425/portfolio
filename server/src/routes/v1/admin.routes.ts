@@ -7,6 +7,7 @@ import { projectsController } from '../../controllers/projects.controller';
 import { contactController } from '../../controllers/contact.controller';
 import { analyticsController } from '../../controllers/analytics.controller';
 import { seoController } from '../../controllers/seo.controller';
+import { policyController } from '../../controllers/policy.controller';
 import { apiLimiter } from '../../middlewares/rateLimiter';
 import { upload } from '../../middlewares/upload';
 
@@ -51,5 +52,10 @@ router.get('/analytics/project-views', analyticsController.getProjectViews);
 router.get('/seo', seoController.getAllSeoMeta);
 router.get('/seo/:page', seoController.getSeoMeta);
 router.put('/seo/:page', seoController.updateSeoMeta);
+
+// Policy pages (Privacy Policy, Terms of Service)
+router.get('/policy-pages', policyController.getAll);
+router.get('/policy-pages/:slug', policyController.getBySlug);
+router.put('/policy-pages/:slug', policyController.updateBySlug);
 
 export default router;

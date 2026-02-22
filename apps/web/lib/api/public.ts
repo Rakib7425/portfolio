@@ -60,6 +60,15 @@ export interface ContactFormData {
   message: string;
 }
 
+export interface PolicyPage {
+  id: string;
+  slug: string;
+  title: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   data: T;
@@ -113,5 +122,11 @@ export const publicApi = {
   subscribeNewsletter: async (email: string): Promise<ApiResponse<void>> => {
     const response = await apiClient.post<ApiResponse<void>>('/public/subscribe', { email });
     return response.data;
+  },
+
+  // Get policy page by slug (privacy-policy, terms-of-service)
+  getPolicyPage: async (slug: string): Promise<PolicyPage> => {
+    const response = await apiClient.get<ApiResponse<PolicyPage>>(`/public/policy/${slug}`);
+    return response.data.data;
   },
 };

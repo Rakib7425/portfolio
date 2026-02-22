@@ -1,5 +1,5 @@
 import { db } from './index';
-import { users, profiles, skills, experiences, projects, seoMeta } from './schema';
+import { users, profiles, skills, experiences, projects, seoMeta, policyPages } from './schema';
 import * as argon2 from 'argon2';
 import * as dotenv from 'dotenv';
 
@@ -285,6 +285,44 @@ When I'm not coding, I enjoy exploring new technologies, contributing to open so
     await db.insert(seoMeta).values(seoData);
     console.log('✅ SEO metadata created');
 
+    // 7. Create Policy Pages (Privacy Policy, Terms of Service)
+    console.log('Creating policy pages...');
+    const privacyContent = `<h2>Privacy Policy</h2>
+<p>Last updated: ${new Date().toLocaleDateString()}</p>
+<h3>1. Information We Collect</h3>
+<p>We may collect personal information you provide when using this portfolio site, such as your name, email address, and any messages you send through the contact form.</p>
+<h3>2. How We Use Your Information</h3>
+<p>We use the information to respond to your inquiries, improve this site, and send occasional updates if you subscribe to our newsletter. We do not sell or share your data with third parties for marketing.</p>
+<h3>3. Cookies and Analytics</h3>
+<p>We may use cookies and similar technologies to understand how visitors use this site. You can disable cookies in your browser settings.</p>
+<h3>4. Data Security</h3>
+<p>We take reasonable measures to protect your personal information. However, no transmission over the internet is fully secure.</p>
+<h3>5. Your Rights</h3>
+<p>You may request access to, correction of, or deletion of your personal data by contacting us.</p>
+<h3>6. Changes</h3>
+<p>We may update this Privacy Policy from time to time. The updated version will be posted on this page.</p>`;
+
+    const termsContent = `<h2>Terms of Service</h2>
+<p>Last updated: ${new Date().toLocaleDateString()}</p>
+<h3>1. Acceptance of Terms</h3>
+<p>By accessing and using this portfolio website, you accept and agree to be bound by these Terms of Service.</p>
+<h3>2. Use of the Site</h3>
+<p>You may use this site for personal, non-commercial purposes. You agree not to misuse the site, attempt to gain unauthorized access, or use it for any illegal purpose.</p>
+<h3>3. Intellectual Property</h3>
+<p>Content on this site, including text, images, and code, is owned by the site owner and is protected by copyright. You may not copy or redistribute it without permission.</p>
+<h3>4. Contact Form and Communications</h3>
+<p>When you submit a message through the contact form, you grant us the right to use that information to respond to you. We will not use your contact details for unsolicited marketing.</p>
+<h3>5. Disclaimer</h3>
+<p>This site and its content are provided "as is." We do not warrant that the site will be uninterrupted or error-free.</p>
+<h3>6. Changes</h3>
+<p>We may modify these terms at any time. Continued use of the site after changes constitutes acceptance of the new terms.</p>`;
+
+    await db.insert(policyPages).values([
+      { slug: 'privacy-policy', title: 'Privacy Policy', content: privacyContent },
+      { slug: 'terms-of-service', title: 'Terms of Service', content: termsContent },
+    ]).onConflictDoNothing({ target: policyPages.slug });
+    console.log('✅ Policy pages created');
+
     console.log('\n✨ Database seeding completed successfully!');
     console.log('\n📊 Summary:');
     console.log('  - 1 admin user');
@@ -292,7 +330,8 @@ When I'm not coding, I enjoy exploring new technologies, contributing to open so
     console.log('  - 22 skills');
     console.log('  - 2 work experiences');
     console.log('  - 6 projects');
-    console.log('  - 6 SEO pages\n');
+    console.log('  - 6 SEO pages');
+    console.log('  - 2 policy pages\n');
 
     process.exit(0);
   } catch (error) {
